@@ -40,6 +40,33 @@ class FamilyChatbot:
                 print("OK! I learned something.")
             except Exception as e:
                 print(f"That’s impossible! {e}")
+        elif "is a brother of" in statement:
+            sibling1, sibling2 = self._extract_names(statement, "is a brother of")
+            try:
+                self.prolog.assertz(f"male({sibling1.lower()})")
+                self.prolog.assertz(f"sibling({sibling1.lower()}, {sibling2.lower()})")
+                self.prolog.assertz(f"sibling({sibling2.lower()}, {sibling1.lower()})")
+                print("OK! I learned something.")
+            except Exception as e:
+                print(f"That’s impossible! {e}")
+        elif "is a sister of" in statement:
+            sibling1, sibling2 = self._extract_names(statement, "is a sister of")
+            try:
+                self.prolog.assertz(f"female({sibling1.lower()})")
+                self.prolog.assertz(f"sibling({sibling1.lower()}, {sibling2.lower()})")
+                self.prolog.assertz(f"sibling({sibling2.lower()}, {sibling1.lower()})")
+                print("OK! I learned something.")
+            except Exception as e:
+                print(f"That’s impossible! {e}")
+        #handles [Name1] and [Name2] are siblings
+        elif "are siblings" in statement:
+            sibling1, sibling2 = self._extract_names(statement.replace(" are siblings", ""), " and ")
+            try:
+                self.prolog.assertz(f"sibling({sibling1.lower()}, {sibling2.lower()})")
+                self.prolog.assertz(f"sibling({sibling2.lower()}, {sibling1.lower()})")
+                print("OK! I learned something.")
+            except Exception as e:
+                print(f"That’s impossible! {e}")
         else:
             print("Invalid statement. Please follow the sentence patterns.")
 

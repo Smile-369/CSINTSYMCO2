@@ -2,6 +2,7 @@
 :- dynamic male/1.
 :- dynamic female/1.
 :- dynamic parent/2.
+:- dynamic sibling/2.
 
 % Rules for family relationships
 father(X, Y) :- parent(X, Y), male(X).
@@ -13,7 +14,7 @@ sibling(X, Y) :-
     (parent(T, Y) ; \+ parent(T, Y), parent(Z, Y)),
     Z \= T, 
     X \= Y.
-    
+
 brother(X, Y) :- sibling(X, Y), male(X).
 sister(X, Y) :- sibling(X, Y), female(X).
 
