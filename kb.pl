@@ -7,6 +7,15 @@
 father(X, Y) :- parent(X, Y), male(X).
 mother(X, Y) :- parent(X, Y), female(X).
 
+assume_second_parent(X, Y) :- 
+    sibling(X, Y),
+    parent(P, X), 
+    parent(P, Y), 
+    not(parent(P2, X)), 
+    not(parent(P2, Y)),
+    assert(parent(P2, X)), 
+    assert(parent(P2, Y)).
+
 sibling(X, Y) :- parent(Z, X), parent(Z, Y), X \= Y.
 brother(X, Y) :- sibling(X, Y), male(X).
 sister(X, Y) :- sibling(X, Y), female(X).

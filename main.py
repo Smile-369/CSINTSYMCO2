@@ -45,11 +45,13 @@ class FamilyChatbot:
 
 
     def process_question(self, question):
+        # Handle the "Is [Parent] the father of [Child]" question
         if "Is" in question and "the father of" in question:
             parent, child = self._extract_names(question, "is the father of")
             result = list(self.prolog.query(f"father({parent.lower()}, {child.lower()})"))
             print("Yes!" if result else "No!")
 
+        # Handle the "Who is the father of [Child]?" question
         elif "Who is the father of" in question:
             child = question.replace("Who is the father of", "").strip().replace("?", "")
             results = list(self.prolog.query(f"father(X, {child.lower()})"))
@@ -58,18 +60,26 @@ class FamilyChatbot:
             else:
                 print(f"I don’t know who the father of {child} is.")
 
+        # Handle the "Are [Name1] and [Name2] siblings?" question
         elif "Are" in question and "siblings" in question:
             parts = question.replace("Are", "").replace("siblings", "").replace("?", "").split("and")
-            person1 = parts[0].strip().lower().capitalize()
-            person2 = parts[1].strip().lower().capitalize()
-            result = list(self.prolog.query(f"sibling({person1.lower()}, {person2.lower()})"))
-            print("Yes!" if result else "No!")
+            if len(parts) == 2:
+                person1 = parts[0].strip().lower().capitalize()
+                person2 = parts[1].strip().lower().capitalize()
+                result = list(self.prolog.query(f"sibling({person1}, {person2})"))
+                if result:
+                    self.prolog.query(f"assume_second_parent({person1}, {person2})")
+                print("Yes!" if result else "No!")
+            else:
+                print("Invalid question. Please follow the sentence patterns.")
 
+        # Handle the "Is [Parent] the mother of [Child]" question
         elif "Is" in question and "the mother of" in question:
             parent, child = self._extract_names(question, "is the mother of")
             result = list(self.prolog.query(f"mother({parent.lower()}, {child.lower()})"))
             print("Yes!" if result else "No!")
 
+        # Handle the "Who is the mother of [Child]?" question
         elif "Who is the mother of" in question:
             child = question.replace("Who is the mother of", "").strip().replace("?", "")
             results = list(self.prolog.query(f"mother(X, {child.lower()})"))
@@ -78,6 +88,7 @@ class FamilyChatbot:
             else:
                 print(f"I don’t know who the mother of {child} is.")
 
+        # Handle invalid questions
         else:
             print("Invalid question. Please follow the sentence patterns.")
 
