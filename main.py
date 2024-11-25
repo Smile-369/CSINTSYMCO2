@@ -45,13 +45,11 @@ class FamilyChatbot:
 
 
     def process_question(self, question):
-        # Handling the father-child relationship
         if "Is" in question and "the father of" in question:
             parent, child = self._extract_names(question, "is the father of")
             result = list(self.prolog.query(f"father({parent.lower()}, {child.lower()})"))
             print("Yes!" if result else "No!")
 
-        # Handling the "Who is the father of" question
         elif "Who is the father of" in question:
             child = question.replace("Who is the father of", "").strip().replace("?", "")
             results = list(self.prolog.query(f"father(X, {child.lower()})"))
@@ -60,19 +58,18 @@ class FamilyChatbot:
             else:
                 print(f"I don’t know who the father of {child} is.")
 
-        # Handling sibling relationship query
         elif "Are" in question and "siblings" in question:
-            person1, person2 = self._extract_names(question, "are siblings")
+            parts = question.replace("Are", "").replace("siblings", "").replace("?", "").split("and")
+            person1 = parts[0].strip().lower().capitalize()
+            person2 = parts[1].strip().lower().capitalize()
             result = list(self.prolog.query(f"sibling({person1.lower()}, {person2.lower()})"))
             print("Yes!" if result else "No!")
 
-        # Handling the "Is X the mother of Y?" question
         elif "Is" in question and "the mother of" in question:
             parent, child = self._extract_names(question, "is the mother of")
             result = list(self.prolog.query(f"mother({parent.lower()}, {child.lower()})"))
             print("Yes!" if result else "No!")
 
-        # Handling the "Who is the mother of X?" question
         elif "Who is the mother of" in question:
             child = question.replace("Who is the mother of", "").strip().replace("?", "")
             results = list(self.prolog.query(f"mother(X, {child.lower()})"))
@@ -81,7 +78,6 @@ class FamilyChatbot:
             else:
                 print(f"I don’t know who the mother of {child} is.")
 
-        # If none of the valid patterns are found
         else:
             print("Invalid question. Please follow the sentence patterns.")
 
