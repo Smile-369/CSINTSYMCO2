@@ -67,8 +67,6 @@ class FamilyChatbot:
                 person1 = parts[0].strip().lower().capitalize()
                 person2 = parts[1].strip().lower().capitalize()
                 result = list(self.prolog.query(f"sibling({person1}, {person2})"))
-                if result:
-                    self.prolog.query(f"assume_second_parent({person1}, {person2})")
                 print("Yes!" if result else "No!")
             else:
                 print("Invalid question. Please follow the sentence patterns.")
@@ -87,7 +85,34 @@ class FamilyChatbot:
                 print(f"The mother of {child} is {results[0]['X'].capitalize()}.")
             else:
                 print(f"I don’t know who the mother of {child} is.")
+            # Handle grandparents and grandchildren
+        # Handle siblings
+        elif "Who are the siblings of" in question:
+            person = question.replace("Who are the siblings of", "").strip().replace("?", "")
+            results = list(self.prolog.query(f"sibling(X, {person.lower()})"))
+            if results:
+                siblings = [result['X'].capitalize() for result in results]
+                print(f"The siblings of {person} are: {', '.join(siblings)}")
+            else:
+                print(f"I don’t know the siblings of {person}.")
 
+        elif "Who are the grandparents of" in question:
+            grandchild = question.replace("Who are the grandparents of", "").strip().replace("?", "")
+            results = list(self.prolog.query(f"grandparent(X, {grandchild.lower()})"))
+            if results:
+                grandparents = [result['X'].capitalize() for result in results]
+                print(f"The grandparents of {grandchild} are: {', '.join(grandparents)}")
+            else:
+                print(f"I don’t know the grandparents of {grandchild}.")
+
+        elif "Who are the grandchildren of" in question:
+            grandparent = question.replace("Who are the grandchildren of", "").strip().replace("?", "")
+            results = list(self.prolog.query(f"grandchild(X, {grandparent.lower()})"))
+            if results:
+                grandchildren = [result['X'].capitalize() for result in results]
+                print(f"The grandchildren of {grandparent} are: {', '.join(grandchildren)}")
+            else:
+                print(f"I don’t know the grandchildren of {grandparent}.")
         # Handle invalid questions
         else:
             print("Invalid question. Please follow the sentence patterns.")
