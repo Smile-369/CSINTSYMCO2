@@ -5,14 +5,11 @@ class FamilyChatbot:
         self.prolog = Prolog()
         self.prolog.consult(prolog_file)
 
-    def _extract_names(self, question, pattern):
-        parts = question.replace(pattern, "").strip().replace("?", "").split("and")
-        if len(parts) != 2:
-            print("Invalid statement. Please follow the sentence patterns.")
-            return None, None
-        person1 = parts[0].strip().capitalize()
-        person2 = parts[1].strip().capitalize()
-        return person1, person2
+    def _extract_names(self, statement, relationship):
+        parts = statement.split(relationship)
+        name1 = parts[0].strip().lower().capitalize()
+        name2 = parts[1].strip().lower().capitalize()
+        return name1, name2
 
     def _assert_fact(self, fact):
         try:
