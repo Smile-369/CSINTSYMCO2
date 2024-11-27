@@ -204,6 +204,32 @@ class FamilyChatbot:
                 print("OK! I learned something.")
             except Exception as e:
                 print(f"That’s impossible! {e}")
+        elif "are the parents of" in statement:
+            parent1, parent2, child = statement.replace("are the parents of", "").split("and")
+            try:
+                self.prolog.assertz(f"parent({parent1.lower()}, {child.lower()})")
+                self.prolog.assertz(f"parent({parent2.lower()}, {child.lower()})")
+                print("OK! I learned something.")
+            except Exception as e:
+                print(f"That’s impossible! {e}")
+        elif "is a child of" in statement:
+            child, parent = self._extract_names(statement, "is a child of")
+            try:
+                self.prolog.assertz(f"parent({parent.lower()}, {child.lower()})")
+                print("OK! I learned something.")
+            except Exception as e:
+                print(f"That’s impossible! {e}")
+        elif "are children of" in statement:
+            parts = statement.replace("are children", "").replace("of", "and").replace(", "," and ").split("and")
+            if len(parts) >= 2:
+                children = [child.strip().lower().capitalize() for child in parts[:-1]]
+                parent = parts[-1].strip().lower().capitalize()
+                try:
+                    for child in children:
+                        self.prolog.assertz(f"parent({parent.lower()}, {child.lower()})")
+                    print("OK! I learned something.")
+                except Exception as e:
+                    print(f"That’s impossible! {e}")
         else:
             print("Invalid statement. Please follow the sentence patterns.")
 
@@ -405,11 +431,15 @@ class FamilyChatbot:
                 print(f"I don’t know the children of {parent}.")
 
         elif "Are" in question and "the children of" in question:
-            parts = question.replace("Are", "").replace("of","and").replace("the children", "").replace("?", "").split("and")
-            if len(parts) == 4:
-                children = [parts[0].strip().lower().capitalize(), parts[1].strip().lower().capitalize(), parts[2].strip().lower().capitalize()]
-                parent = parts[3].strip().lower().capitalize()
-                results = [list(self.prolog.query(f"parent({parent.lower()}, {child.lower()})")) for child in children]
+            parts = question.replace("Are", "").replace("of","and").replace("the children", "").replace("?", "").replace(",","and").split("and")
+            print(parts)
+            if len(parts) >= 2:
+                children = [child.strip().lower().capitalize() for child in parts[:-1]]
+                parent = parts[-1].strip().lower().capitalize()
+                results = [
+                    list(self.prolog.query(f"parent({parent.lower()}, {child.lower()})"))
+                    for child in children
+                ]
                 if all(results):
                     print("Yes!")
                 else:
@@ -449,6 +479,9 @@ class FamilyChatbot:
         print("  - [Name] is a niece of [Name]")
         print("  - [Name] is a nephew of [Name]")
         print("  - [Name] and [Name] are siblings")
+        print("  - [Name] is a child of [Name]")
+        print("  - [Name] and [Name] are the parents of [Name]")
+        print("  - [Name], [Name] and [Name]... are the children of [Name]")
     
     def questions(self):
         print("Here are the commands you can use:")
@@ -475,7 +508,7 @@ class FamilyChatbot:
         print("  - Is [Name] a niece of [Name]?")
         print("  - Is [Name] a nephew of [Name]?")
         print("  - Who are the children of [Name]?")
-        print("  - Are [Name], [Name], and [Name] the children of [Name]?")
+        print("  - Are [Name], [Name] and [Name]... the children of [Name]?")
         print("  - Are [Name] and [Name] related?")
         print("Type 'quit' or 'exit' to end the chat.")
     def chat(self):
