@@ -29,7 +29,10 @@ son(X,Y) :- parent(Y, X), male(X).
 grandparent(X, Y) :- parent(X, Z), parent(Z, Y), X \= Y.
 grandmother(X, Y) :- grandparent(X, Y), female(X), X \= Y.
 grandfather(X, Y) :- grandparent(X, Y), male(X), X \= Y.
+
 grandchild(X, Y) :- grandparent(Y, X), X \= Y.
+grandson(X, Y) :- grandparent(X, Y), male(X), X \= Y.
+granddaughter(X, Y) :- grandparent(X,Y), female(X),X \= Y.
 
 pibling(X, Y) :- parent(Z, Y), sibling(X, Z), X \= Y.
 uncle(X, Y) :- pibling(X, Y), male(X), X \= Y.
