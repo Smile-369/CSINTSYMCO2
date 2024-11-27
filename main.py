@@ -24,7 +24,21 @@ class FamilyChatbot:
             print(f"Error asserting fact: {e}")
 
     def process_statement(self, statement):
-        if "is the father of" in statement:
+        if "is a male" in statement:
+            name = statement.replace("is a male", "").strip().lower().capitalize()
+            try:
+                self.prolog.assertz(f"male({name.lower()})")
+                print("OK! I learned something.")
+            except Exception as e:
+                print(f"That’s impossible! {e}")
+        elif "is a female" in statement:
+            name = statement.replace("is a female", "").strip().lower().capitalize()
+            try:
+                self.prolog.assertz(f"female({name.lower()})")
+                print("OK! I learned something.")
+            except Exception as e:
+                print(f"That’s impossible! {e}")
+        elif "is the father of" in statement:
             parent, child = self._extract_names(statement, "is the father of")
             try:
                 if parent.lower() == child.lower() :
@@ -136,6 +150,24 @@ class FamilyChatbot:
                 print(f"The siblings of {person} are: {', '.join(siblings)}")
             else:
                 print(f"I don’t know the siblings of {person}.")
+
+        elif "Who are the brothers of" in question:
+            person = question.replace("Who are the brothers of", "").strip().replace("?", "")
+            results = list(self.prolog.query(f"brother(X, {person.lower()})"))
+            if results:
+                brothers = [result['X'].capitalize() for result in results]
+                print(f"The brothers of {person} are: {', '.join(brothers)}")
+            else:
+                print(f"I don’t know the brothers of {person}.")
+
+        elif "Who are the sisters of" in question:
+            person = question.replace("Who are the sisters of", "").strip().replace("?", "")
+            results = list(self.prolog.query(f"sister(X, {person.lower()})"))
+            if results:
+                sisters = [result['X'].capitalize() for result in results]
+                print(f"The sisters of {person} are: {', '.join(sisters)}")
+            else:
+                print(f"I don’t know the sisters of {person}.")
 
         elif "Who are the grandparents of" in question:
             grandchild = question.replace("Who are the grandparents of", "").strip().replace("?", "")
