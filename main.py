@@ -20,7 +20,7 @@ class FamilyChatbot:
             else:
                 return True
         except Exception as e:
-            print(f"Error Checking fact: {e}") 
+            print(f"Error Checking fact:") 
     def check_sex(self, name, sex):
         if sex=='male':
             sex='female'
@@ -52,7 +52,7 @@ class FamilyChatbot:
                     self.prolog.assertz(f"male({name.lower()})")
                     print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible! ")
         elif "is a female" in statement:
             name = statement.replace("is a female", "").strip().lower().capitalize()
             if self.check_sex(name, "female"):
@@ -62,7 +62,7 @@ class FamilyChatbot:
                     self.prolog.assertz(f"female({name.lower()})")
                     print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible!")
         elif "is the father of" in statement:
             parent, child = self._extract_names(statement, "is the father of")
             if self.check_relation(child,parent) or self.check_sex(parent, 'male'):
@@ -76,7 +76,7 @@ class FamilyChatbot:
                         self.prolog.assertz(f"parent({parent.lower()}, {child.lower()})")
                         print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible!")
         elif "is the mother of" in statement:
             parent, child = self._extract_names(statement, "is the mother of")
             if self.check_relation(child,parent) or self.check_sex(parent, 'female'):
@@ -90,7 +90,7 @@ class FamilyChatbot:
                         self.prolog.assertz(f"parent({parent.lower()}, {child.lower()})")
                         print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible!")
         elif "is a brother of" in statement:
             sibling1, sibling2 = self._extract_names(statement, "is a brother of")
             if self.check_sex(sibling1,'male') or self.check_relation(sibling2,sibling1):
@@ -105,7 +105,7 @@ class FamilyChatbot:
                         self.prolog.assertz(f"sibling({sibling2.lower()}, {sibling1.lower()})")
                         print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible!")
         elif "is a sister of" in statement:
             sibling1, sibling2 = self._extract_names(statement, "is a sister of")
             if self.check_sex(sibling1,'female') or self.check_relation(sibling2,sibling1):
@@ -120,7 +120,7 @@ class FamilyChatbot:
                         self.prolog.assertz(f"sibling({sibling2.lower()}, {sibling1.lower()})")
                         print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible!")
 
         elif "is a grandmother of" in statement:
             grandparent, grandchild = self._extract_names(statement, "is a grandmother of")
@@ -135,7 +135,7 @@ class FamilyChatbot:
                         self.prolog.assertz(f"grandparent({grandparent.lower()}, {grandchild.lower()})")
                         print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible! ")
 
         elif "is a grandfather of" in statement:
             grandparent, grandchild = self._extract_names(statement, "is a grandfather of")
@@ -150,7 +150,7 @@ class FamilyChatbot:
                         self.prolog.assertz(f"grandparent({grandparent.lower()}, {grandchild.lower()})")
                         print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible!")
         elif "is a grandson of" in statement:
             grandchild, grandparent = self._extract_names(statement, "is a grandson of")
             if self.check_sex(grandchild,'male') or self.check_relation(grandparent,grandchild):
@@ -164,11 +164,11 @@ class FamilyChatbot:
                         self.prolog.assertz(f"grandchild({grandparent.lower()}, {grandparent.lower()})")
                         print("OK!, I learned that something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible! ")
         elif "is a granddaughter of" in statement:
             grandchild, grandparent = self._extract_names(statement, "is a granddaughter of")
             if self.check_sex(grandchild,'female') or self.check_relation(grandparent,grandchild):
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible!")
             else:
                 try:
                     if grandchild.lower() == grandparent.lower():
@@ -178,11 +178,11 @@ class FamilyChatbot:
                         self.prolog.assertz(f"grandchild({grandparent.lower()}, {grandparent.lower()})")
                         print("OK!, I learned that something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible! ")
         elif "is a son of" in statement:
             child, parent = self._extract_names(statement, "is a son of")
             if self.check_sex(child,'male') or self.check_relation(parent,child):
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible!")
             else:
                 try:
                     if child.lower() == parent.lower():
@@ -192,11 +192,11 @@ class FamilyChatbot:
                         self.prolog.assertz(f"parent({parent.lower()}, {child.lower()})")
                         print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible! ")
         elif "is a daughter of" in statement:
             child, parent = self._extract_names(statement, "is a daughter of")
             if self.check_sex(child,'female') or self.check_relation(parent,child):
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible!")
             else:
                 try:
                     if child.lower() == parent.lower():
@@ -206,11 +206,11 @@ class FamilyChatbot:
                         self.prolog.assertz(f"parent({parent.lower()}, {child.lower()})")
                         print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible! ")
         elif "is an aunt of" in statement:
             aunt, niece_or_nephew = self._extract_names(statement, "is an aunt of")
             if self.check_sex(aunt,'feale') or self.check_relation(niece_or_nephew,aunt):
-                print(f"That’s impossible! {e}")
+                print(f"That’s impossible! ")
             else:
                 try:
                     if aunt.lower() == niece_or_nephew.lower():
@@ -220,11 +220,11 @@ class FamilyChatbot:
                         self.prolog.assertz(f"pibling({aunt.lower()}, {niece_or_nephew.lower()})")
                         print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible! ")
         elif "is an uncle of" in statement:
             uncle, niece_or_nephew = self._extract_names(statement, "is an uncle of")
             if self.check_sex(uncle,'male') or self.check_relation(niece_or_nephew,uncle):
-                print(f"That’s impossible! {e}")
+                print(f"That’s impossible! ")
             else:
                 try:
                     if uncle.lower() == niece_or_nephew.lower():
@@ -234,11 +234,11 @@ class FamilyChatbot:
                         self.prolog.assertz(f"pibling({uncle.lower()}, {niece_or_nephew.lower()})")
                         print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible! ")
         elif "is a niece of" in statement:
             niece, aunt_or_uncle = self._extract_names(statement, "is a niece of")
             if self.check_sex(niece,'female') or self.check_relation(niece,aunt_or_uncle):
-                print(f"That’s impossible! {e}")
+                print(f"That’s impossible! ")
             else:
                 try:
                     if niece.lower() == aunt_or_uncle.lower():
@@ -248,11 +248,11 @@ class FamilyChatbot:
                         self.prolog.assertz(f"nibling({niece.lower()}, {aunt_or_uncle.lower()})")
                         print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible! ")
         elif "is a nephew of" in statement:
             nephew, aunt_or_uncle = self._extract_names(statement, "is a nephew of")
             if self.check_sex(nephew,'male') or self.check_relation(nephew,aunt_or_uncle):
-                print(f"That’s impossible! {e}")
+                print(f"That’s impossible!")
             else:
                 try:
                     if nephew.lower() == aunt_or_uncle.lower():
@@ -262,7 +262,7 @@ class FamilyChatbot:
                         self.prolog.assertz(f"nibling({nephew.lower()}, {aunt_or_uncle.lower()})")
                         print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible!")
         elif "are siblings" in statement:
             sibling1, sibling2 = self._extract_names(statement.replace(" are siblings", ""), " and ")
             if self.check_relation(sibling2, sibling1):
@@ -273,7 +273,7 @@ class FamilyChatbot:
                     self.prolog.assertz(f"sibling({sibling2.lower()}, {sibling1.lower()})")
                     print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible!")
         elif "are the parents of" in statement:
             parent1, parent2, child = statement.replace("are the parents", "").replace("of","and").split("and")
             if self.check_relation(child, parent1) or self.check_relation(child, parent2):
@@ -284,7 +284,7 @@ class FamilyChatbot:
                     self.prolog.assertz(f"parent({parent2.lower()}, {child.lower()})")
                     print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible!")
         elif "is a child of" in statement:
             child, parent = self._extract_names(statement, "is a child of")
             if self.check_relation(parent, child):
@@ -294,7 +294,7 @@ class FamilyChatbot:
                     self.prolog.assertz(f"parent({parent.lower()}, {child.lower()})")
                     print("OK! I learned something.")
                 except Exception as e:
-                    print(f"That’s impossible! {e}")
+                    print(f"That’s impossible! ")
         elif "are the children of" in statement:
             parts = statement.replace("are the children", "").replace("of", "and").replace(", "," and ").split("and")
             children = [child.strip().lower().capitalize() for child in parts[:-1]]
@@ -308,7 +308,7 @@ class FamilyChatbot:
                             self.prolog.assertz(f"parent({parent.lower()}, {child.lower()})")
                         print("OK! I learned something.")
                     except Exception as e:
-                        print(f"That’s impossible! {e}")
+                        print(f"That’s impossible!")
                 else:
                     print("Invalid statement. Please follow the sentence patterns.")
         else:
