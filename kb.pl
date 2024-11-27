@@ -24,6 +24,8 @@ brother(X, Y) :- sibling(X, Y), male(X), X \= Y.
 sister(X, Y) :- sibling(X, Y), female(X), X \= Y.
 
 grandparent(X, Y) :- parent(X, Z), parent(Z, Y), X \= Y.
+grandmother(X, Y) :- grandparent(X, Y), female(X), X \= Y.
+grandfather(X, Y) :- grandparent(X, Y), male(X), X \= Y.
 grandchild(X, Y) :- grandparent(Y, X), X \= Y.
 
 pibling(X, Y) :- parent(Z, Y), sibling(X, Z), X \= Y.
