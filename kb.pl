@@ -14,11 +14,8 @@
 father(X, Y) :- parent(X, Y), male(X), X \= Y.
 mother(X, Y) :- parent(X, Y), female(X), X \= Y.
 
-sibling(X, Y) :- 
-    parent(Z, X), parent(Z, Y), 
-    parent(T, X), 
-    (parent(T, Y) ; \+ parent(T, Y), parent(Z, Y)),
-    Z \= T, 
+sibling(X, Y) :-
+    parent(Z, X), parent(Z, Y),  
     X \= Y.
 
 brother(X, Y) :- sibling(X, Y), male(X), X \= Y.
