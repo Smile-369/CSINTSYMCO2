@@ -74,7 +74,8 @@ class FamilyChatbot:
     def process_question(self, question):
         # Handle the "Is [Parent] the father of [Child]" question
         if "Is" in question and "the father of" in question:
-            parent, child = self._extract_names(question, "is the father of")
+            modified_question = question.replace("Is ", "").replace("?", "").strip()
+            parent, child = self._extract_names(modified_question, "the father of")
             result = list(self.prolog.query(f"father({parent.lower()}, {child.lower()})"))
             print("Yes!" if result else "No!")
 
@@ -100,7 +101,8 @@ class FamilyChatbot:
 
         # Handle the "Is [Parent] the mother of [Child]" question
         elif "Is" in question and "the mother of" in question:
-            parent, child = self._extract_names(question, "is the mother of")
+            modified_question = question.replace("Is ", "").replace("?", "").strip()
+            parent, child = self._extract_names(modified_question, "the mother of")
             result = list(self.prolog.query(f"mother({parent.lower()}, {child.lower()})"))
             print("Yes!" if result else "No!")
 
