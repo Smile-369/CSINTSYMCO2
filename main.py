@@ -564,6 +564,8 @@ class FamilyChatbot:
         print("  - [Name] is a child of [Name]")
         print("  - [Name] and [Name] are the parents of [Name]")
         print("  - [Name], [Name] and [Name]... are the children of [Name]")
+        print("Type 'quit' or 'exit' to end the chat.")
+
     
     def questions(self):
         print("Here are the commands you can use:")
@@ -596,8 +598,9 @@ class FamilyChatbot:
     def chat(self):
         print("Welcome to the Family Relationship Chatbot!")
         print("You can tell me statements or ask me questions about family relationships.")
-        print("Type 'quit' or exit' to end the chat. Statements or statement to see the available statements. And Questions or questions to see the available questions.")
+        print("Statements or statement to see the available statements. And Questions or questions to see the available questions.")
         while True:
+            print("Type 'quit' or 'exit' to end the chat.")
             user_input = input("\n> ").strip()
             if user_input.lower() in ["quit", "exit"]:
                 print("Goodbye!")
