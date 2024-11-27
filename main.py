@@ -282,6 +282,21 @@ class FamilyChatbot:
             child, parent = self._extract_names(modified_question, "the mother of")
             result = list(self.prolog.query(f"son({child.lower()}, {parent.lower()})"))
             print("Yes!" if result else "No!")
+        elif "Is" in question and "a child of" in question:
+            modified_question = question.replace("Is ", "").replace("?", "").strip()
+            child, parent = self._extract_names(modified_question, "a child of")
+            result = list(self.prolog.query(f"parent({parent.lower()}, {child.lower()})"))
+            print("Yes!" if result else "No!")
+        elif "Is" in question and "an uncle of" in question:
+            modified_question = question.replace("Is ", "").replace("?", "").strip()
+            uncle, niece_or_nephew = self._extract_names(modified_question, "an uncle of")
+            result = list(self.prolog.query(f"uncle({uncle.lower()}, {niece_or_nephew.lower()})"))
+            print("Yes!" if result else "No!")
+        elif "Is" in question and "an aunt of" in question:
+            modified_question = question.replace("Is ", "").replace("?", "").strip()
+            aunt, niece_or_nephew = self._extract_names(modified_question, "an aunt of")
+            result = list(self.prolog.query(f"aunt({aunt.lower()}, {niece_or_nephew.lower()})"))
+            print("Yes!" if result else "No!")
         else:
             print("Invalid question. Please follow the sentence patterns.")
 
