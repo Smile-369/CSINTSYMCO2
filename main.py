@@ -275,7 +275,7 @@ class FamilyChatbot:
                 except Exception as e:
                     print(f"That’s impossible! {e}")
         elif "are the parents of" in statement:
-            parent1, parent2, child = statement.replace("are the parents of", "").split("and")
+            parent1, parent2, child = statement.replace("are the parents", "").replace("of","and").split("and")
             if self.check_relation(child, parent1) or self.check_relation(child, parent2):
                 print("That’s impossible!")
             else:
@@ -496,7 +496,15 @@ class FamilyChatbot:
             niece, aunt_or_uncle = self._extract_names(modified_question, "a niece of")
             result = list(self.prolog.query(f"niece({niece.lower()}, {aunt_or_uncle.lower()})"))
             print("Yes!" if result else "No!")
-        
+        elif "Who are the parents of" in question:
+            child = question.replace("Who are the parents of", "").strip().replace("?", "")
+            results = list(self.prolog.query(f"parent(X, {child.lower()})"))
+            if results:
+                parents = [result['X'].capitalize() for result in results]
+                print(f"The parents of {child} are: {', '.join(parents)}.")
+            else:
+                print(f"I don’t know the parents of {child}.")
+
         elif "Is" in question and "a nephew of" in question:
             modified_question = question.replace("Is ", "").replace("?", "").strip()
             nephew, aunt_or_uncle = self._extract_names(modified_question, "a nephew of")
@@ -592,6 +600,7 @@ class FamilyChatbot:
         print("  - Is [Name] a niece of [Name]?")
         print("  - Is [Name] a nephew of [Name]?")
         print("  - Who are the children of [Name]?")
+        print("  - Who are the parents of [Name]?")
         print("  - Are [Name], [Name] and [Name]... the children of [Name]?")
         print("  - Are [Name] and [Name] related?")
         print("Type 'quit' or 'exit' to end the chat.")
@@ -599,8 +608,8 @@ class FamilyChatbot:
         print("Welcome to the Family Relationship Chatbot!")
         print("You can tell me statements or ask me questions about family relationships.")
         print("Statements or statement to see the available statements. And Questions or questions to see the available questions.")
+        print("Type 'quit' or 'exit' to end the chat.")
         while True:
-            print("Type 'quit' or 'exit' to end the chat.")
             user_input = input("\n> ").strip()
             if user_input.lower() in ["quit", "exit"]:
                 print("Goodbye!")
