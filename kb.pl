@@ -36,5 +36,20 @@ nibling :- sibling(Z, Y), parent(Z, X), X \= Y.
 nephew(X, Y) :- sibling(Z, Y), parent(Z, X), male(X), X \= Y.
 niece(X, Y) :- sibling(Z, Y), parent(Z, X), female(X), X \= Y.
 
+
+relationship(X, Y, father) :- father(X, Y).
+relationship(X, Y, mother) :- mother(X, Y).
+relationship(X, Y, sibling) :- sibling(X, Y).
+relationship(X, Y, brother) :- brother(X, Y).
+relationship(X, Y, sister) :- sister(X, Y).
+relationship(X, Y, grandparent) :- grandparent(X, Y).
+relationship(X, Y, grandmother) :- grandmother(X, Y).
+relationship(X, Y, grandfather) :- grandfather(X, Y).
+relationship(X, Y, grandchild) :- grandchild(X, Y).
+relationship(X, Y, uncle) :- uncle(X, Y).
+relationship(X, Y, aunt) :- aunt(X, Y).
+relationship(X, Y, nephew) :- nephew(X, Y).
+relationship(X, Y, niece) :- niece(X, Y).
+
 % Validation rule: prevent contradictions
 impossible :- fail.
