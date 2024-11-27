@@ -48,6 +48,7 @@ related(X, Y) :-
     sibling(X, Y);
     brother(X, Y);
     sister(X, Y);
+    child(X, Y);
     son(X, Y);
     daughter(X, Y);
     grandparent(X, Y);

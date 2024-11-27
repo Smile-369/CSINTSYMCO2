@@ -31,15 +31,15 @@ class FamilyChatbot:
         if contradiction: return True
         return False
 
-    def check_relation(self, name1, name2, relation):
-        query = f"{relation}({name1.lower()}, {name2.lower()})"
+    def check_relation(self, name1, name2):
+        query = f"related({name1.lower()}, {name2.lower()})"
         contradiction = self.check_fact(query)
         if contradiction: return True
         return False
     
     def children_check(self,children, parent):
         for child in children:
-            if self.check_relation(child, parent, 'parent'):
+            if self.check_relation(child, parent):
                 return True
         return False
     def process_statement(self, statement):
@@ -65,7 +65,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is the father of" in statement:
             parent, child = self._extract_names(statement, "is the father of")
-            if self.check_relation(child,parent,'parent') or self.check_sex(parent, 'male'):
+            if self.check_relation(child,parent) or self.check_sex(parent, 'male'):
                 print("That’s impossible!")
             else:
                 try:
@@ -79,7 +79,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is the mother of" in statement:
             parent, child = self._extract_names(statement, "is the mother of")
-            if self.check_relation(child,parent,'parent') or self.check_sex(parent, 'female'):
+            if self.check_relation(child,parent) or self.check_sex(parent, 'female'):
                 print("That's impossible!")
             else:
                 try:
@@ -93,7 +93,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is a brother of" in statement:
             sibling1, sibling2 = self._extract_names(statement, "is a brother of")
-            if self.check_sex(sibling1,'male') or self.check_relation(sibling2,sibling1,'sibling'):
+            if self.check_sex(sibling1,'male') or self.check_relation(sibling2,sibling1):
                 print("That’s impossible!")
             else:
                 try:
@@ -108,7 +108,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is a sister of" in statement:
             sibling1, sibling2 = self._extract_names(statement, "is a sister of")
-            if self.check_sex(sibling1,'female') or self.check_relation(sibling2,sibling1,'sibling'):
+            if self.check_sex(sibling1,'female') or self.check_relation(sibling2,sibling1):
                 print("That’s impossible!")
             else:
                 try:
@@ -124,7 +124,7 @@ class FamilyChatbot:
 
         elif "is a grandmother of" in statement:
             grandparent, grandchild = self._extract_names(statement, "is a grandmother of")
-            if self.check_sex(grandparent,'female') or self.check_relation(grandchild,grandparent,'grandparent'):
+            if self.check_sex(grandparent,'female') or self.check_relation(grandchild,grandparent):
                 print("That’s impossible!")
             else:
                 try:
@@ -139,7 +139,7 @@ class FamilyChatbot:
 
         elif "is a grandfather of" in statement:
             grandparent, grandchild = self._extract_names(statement, "is a grandfather of")
-            if self.check_sex(grandparent,'male') or self.check_relation(grandchild,grandparent,'grandparent'):
+            if self.check_sex(grandparent,'male') or self.check_relation(grandchild,grandparent):
                 print("That’s impossible!")
             else:
                 try:
@@ -153,7 +153,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is a grandson of" in statement:
             grandchild, grandparent = self._extract_names(statement, "is a grandson of")
-            if self.check_sex(grandchild,'male') or self.check_relation(grandparent,grandchild,'grandchild'):
+            if self.check_sex(grandchild,'male') or self.check_relation(grandparent,grandchild):
                 print("That's impossible! A person can't be their own grandson.")
             else:
                 try:
@@ -167,7 +167,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is a granddaughter of" in statement:
             grandchild, grandparent = self._extract_names(statement, "is a granddaughter of")
-            if self.check_sex(grandchild,'female') or self.check_relation(grandparent,grandchild,'grandchild'):
+            if self.check_sex(grandchild,'female') or self.check_relation(grandparent,grandchild):
                     print(f"That’s impossible! {e}")
             else:
                 try:
@@ -181,7 +181,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is a son of" in statement:
             child, parent = self._extract_names(statement, "is a son of")
-            if self.check_sex(grandchild,'male') or self.check_relation(parent,child,'child'):
+            if self.check_sex(child,'male') or self.check_relation(parent,child):
                     print(f"That’s impossible! {e}")
             else:
                 try:
@@ -195,7 +195,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is a daughter of" in statement:
             child, parent = self._extract_names(statement, "is a daughter of")
-            if self.check_sex(grandchild,'female') or self.check_relation(parent,child,'child'):
+            if self.check_sex(child,'female') or self.check_relation(parent,child):
                     print(f"That’s impossible! {e}")
             else:
                 try:
@@ -209,7 +209,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is an aunt of" in statement:
             aunt, niece_or_nephew = self._extract_names(statement, "is an aunt of")
-            if self.check_sex(grandchild,'feale') or self.check_relation(niece_or_nephew,aunt,'pibling'):
+            if self.check_sex(aunt,'feale') or self.check_relation(niece_or_nephew,aunt):
                 print(f"That’s impossible! {e}")
             else:
                 try:
@@ -223,7 +223,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is an uncle of" in statement:
             uncle, niece_or_nephew = self._extract_names(statement, "is an uncle of")
-            if self.check_sex(grandchild,'male') or self.check_relation(niece_or_nephew,uncle,'pibling'):
+            if self.check_sex(uncle,'male') or self.check_relation(niece_or_nephew,uncle):
                 print(f"That’s impossible! {e}")
             else:
                 try:
@@ -237,7 +237,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is a niece of" in statement:
             niece, aunt_or_uncle = self._extract_names(statement, "is a niece of")
-            if self.check_sex(grandchild,'female') or self.check_relation(niece,aunt_or_uncle,'nibling'):
+            if self.check_sex(niece,'female') or self.check_relation(niece,aunt_or_uncle):
                 print(f"That’s impossible! {e}")
             else:
                 try:
@@ -251,7 +251,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is a nephew of" in statement:
             nephew, aunt_or_uncle = self._extract_names(statement, "is a nephew of")
-            if self.check_sex(grandchild,'male') or self.check_relation(nephew,aunt_or_uncle,'nibling'):
+            if self.check_sex(nephew,'male') or self.check_relation(nephew,aunt_or_uncle):
                 print(f"That’s impossible! {e}")
             else:
                 try:
@@ -265,7 +265,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "are siblings" in statement:
             sibling1, sibling2 = self._extract_names(statement.replace(" are siblings", ""), " and ")
-            if self.check_relation(sibling2, sibling1,'sibling'):
+            if self.check_relation(sibling2, sibling1):
                 print("That’s impossible!")
             else:
                 try:
@@ -276,7 +276,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "are the parents of" in statement:
             parent1, parent2, child = statement.replace("are the parents of", "").split("and")
-            if self.check_relation(child, parent1,'parent') or self.check_relation(child, parent2,'parent'):
+            if self.check_relation(child, parent1) or self.check_relation(child, parent2):
                 print("That’s impossible!")
             else:
                 try:
@@ -287,7 +287,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! {e}")
         elif "is a child of" in statement:
             child, parent = self._extract_names(statement, "is a child of")
-            if self.check_relation(parent, child,'child'):
+            if self.check_relation(parent, child):
                 print("That’s impossible!")
             else:
                 try:
@@ -295,8 +295,8 @@ class FamilyChatbot:
                     print("OK! I learned something.")
                 except Exception as e:
                     print(f"That’s impossible! {e}")
-        elif "are children of" in statement:
-            parts = statement.replace("are children", "").replace("of", "and").replace(", "," and ").split("and")
+        elif "are the children of" in statement:
+            parts = statement.replace("are the children", "").replace("of", "and").replace(", "," and ").split("and")
             children = [child.strip().lower().capitalize() for child in parts[:-1]]
             parent = parts[-1].strip().lower().capitalize()
             if self.children_check(children, parent):
@@ -309,6 +309,8 @@ class FamilyChatbot:
                         print("OK! I learned something.")
                     except Exception as e:
                         print(f"That’s impossible! {e}")
+                else:
+                    print("Invalid statement. Please follow the sentence patterns.")
         else:
             print("Invalid statement. Please follow the sentence patterns.")
 
