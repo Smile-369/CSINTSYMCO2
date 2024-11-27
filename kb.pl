@@ -7,6 +7,8 @@
 :- dynamic grandparent/2.
 :- dynamic grandchild/2.
 :- dynamic nibling/2.
+:- dynamic child/2.
+
 
 % Rules for family relationships
 father(X, Y) :- parent(X, Y), male(X), X \= Y.
@@ -21,6 +23,8 @@ sibling(X, Y) :-
 
 brother(X, Y) :- sibling(X, Y), male(X), X \= Y.
 sister(X, Y) :- sibling(X, Y), female(X), X \= Y.
+
+child(X, Y) :- parent(Y, X).
 
 daughter(X,Y) :- parent(Y, X), female(X).
 son(X,Y) :- parent(Y, X), male(X).
