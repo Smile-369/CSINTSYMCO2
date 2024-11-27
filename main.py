@@ -573,7 +573,7 @@ class FamilyChatbot:
             person = question.replace("Who are the relatives of", "").strip().replace("?", "")
             results = list(self.prolog.query(f"related(X, {person.lower()})"))
             if results:
-                relatives = [result['X'].capitalize() for result in results]
+                relatives = list(set([result['X'].capitalize() for result in results]))
                 print(f"The relatives of {person} are: {', '.join(relatives)}.")
             else:
                 print(f"I don’t know the relatives of {person}.")
