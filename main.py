@@ -504,7 +504,28 @@ class FamilyChatbot:
                 print(f"The parents of {child} are: {', '.join(parents)}.")
             else:
                 print(f"I don’t know the parents of {child}.")
+        elif "Is" in question and "a grandson of" in question:
+            modified_question = question.replace("Is ", "").replace("?", "").strip()
+            grandchild, grandparent = self._extract_names(modified_question, "a grandson of")
+            result = list(self.prolog.query(f"grandson({grandchild.lower()}, {grandparent.lower()})"))
+            print("Yes!" if result else "No!")
 
+        elif "Is" in question and "a grandaughter of" in question:
+            modified_question = question.replace("Is ", "").replace("?", "").strip()
+            grandchild, grandparent = self._extract_names(modified_question, "a granddaughter of")
+            result = list(self.prolog.query(f"granddaughter({grandchild.lower()}, {grandparent.lower()})"))
+            print("Yes!" if result else "No!")
+        
+        elif "Is" in question and "a grandfather of" in question: 
+            modified_question = question.replace("Is ", "").replace("?", "").strip()
+            grandparent, grandchild = self._extract_names(modified_question, "a grandfather of")
+            result = list(self.prolog.query(f"grandfather({grandparent.lower()}, {grandchild.lower()})"))
+            print("Yes!" if result else "No!")
+        elif "Is" in question and "a grandmother of" in question: 
+            modified_question = question.replace("Is ", "").replace("?", "").strip()
+            grandparent, grandchild = self._extract_names(modified_question, "a grandmother of")
+            result = list(self.prolog.query(f"grandmother({grandparent.lower()}, {grandchild.lower()})"))
+            print("Yes!" if result else "No!")
         elif "Is" in question and "a nephew of" in question:
             modified_question = question.replace("Is ", "").replace("?", "").strip()
             nephew, aunt_or_uncle = self._extract_names(modified_question, "a nephew of")
@@ -542,8 +563,10 @@ class FamilyChatbot:
             if len(parts) == 2:
                 person1 = parts[0].strip().lower().capitalize()
                 person2 = parts[1].strip().lower().capitalize()
-                result = list(self.prolog.query(f"related({person1}, {person2})"))
-                print("Yes!" if result else "No!")
+                if self.check_relation(person1, person2):
+                    print("Yes!")
+                else:
+                    print("No!")
             else:
                 print("Invalid question. Please follow the sentence patterns.")
         else:
@@ -599,6 +622,10 @@ class FamilyChatbot:
         print("  - Is [Name] an aunt of [Name]?")
         print("  - Is [Name] a niece of [Name]?")
         print("  - Is [Name] a nephew of [Name]?")
+        print("  - Is [Name] an grandfather of [Name]?")
+        print("  - Is [Name] an grandmother of [Name]?")
+        print("  - Is [Name] a grandson of [Name]?")
+        print("  - Is [Name] a grandaughter of [Name]?")
         print("  - Who are the children of [Name]?")
         print("  - Who are the parents of [Name]?")
         print("  - Are [Name], [Name] and [Name]... the children of [Name]?")
