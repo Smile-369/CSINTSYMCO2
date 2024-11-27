@@ -11,114 +11,156 @@ class FamilyChatbot:
         name2 = parts[1].strip().lower().capitalize()
         return name1, name2
 
-    def _assert_fact(self, fact):
+    def check_fact(self, fact):
         try:
             query = f"\\+ ({fact})" 
             contradiction = list(self.prolog.query(query))
             if contradiction:
-                print("That’s impossible!")
+                return False
             else:
-                self.prolog.assertz(fact)
-                print("OK! I learned something.")
+                return True
         except Exception as e:
-            print(f"Error asserting fact: {e}")
+            print(f"Error Checking fact: {e}") 
+    def check_sex(self, name, sex):
+        if sex=='male':
+            sex='female'
+        elif sex=='female':
+            sex='male'
+        query = f"{sex}({name.lower()})"
+        contradiction = self.check_fact(query)
+        if contradiction: return True
+        return False
 
+    def check_relation(self, name1, name2, relation):
+        query = f"{relation}({name1.lower()}, {name2.lower()})"
+        contradiction = self.check_fact(query)
+        if contradiction: return True
+        return False
     def process_statement(self, statement):
         if "is a male" in statement:
             name = statement.replace("is a male", "").strip().lower().capitalize()
-            try:
-                self.prolog.assertz(f"male({name.lower()})")
-                print("OK! I learned something.")
-            except Exception as e:
-                print(f"That’s impossible! {e}")
+            if self.check_sex(name,'male'):
+                print("That’s impossible!")
+            else:
+                try:
+                    self.prolog.assertz(f"male({name.lower()})")
+                    print("OK! I learned something.")
+                except Exception as e:
+                    print(f"That’s impossible! {e}")
         elif "is a female" in statement:
             name = statement.replace("is a female", "").strip().lower().capitalize()
-            try:
-                self.prolog.assertz(f"female({name.lower()})")
-                print("OK! I learned something.")
-            except Exception as e:
-                print(f"That’s impossible! {e}")
+            if self.check_sex(name, "female"):
+                print("That’s impossible!")
+            else:
+                try:
+                    self.prolog.assertz(f"female({name.lower()})")
+                    print("OK! I learned something.")
+                except Exception as e:
+                    print(f"That’s impossible! {e}")
         elif "is the father of" in statement:
             parent, child = self._extract_names(statement, "is the father of")
-            try:
-                if parent.lower() == child.lower() :
-                    print(f"That’s impossible! A person can't be their own father.")
-                else: 
-                    self.prolog.assertz(f"male({parent.lower()})")
-                    self.prolog.assertz(f"parent({parent.lower()}, {child.lower()})")
-                    print("OK! I learned something.")
-            except Exception as e:
-                print(f"That’s impossible! {e}")
+            if self.check_relation(child,parent,'parent') or self.check_sex(parent, 'male'):
+                print("That’s impossible!")
+            else:
+                try:
+                    if parent.lower() == child.lower() :
+                        print(f"That’s impossible! A person can't be their own father.")
+                    else: 
+                        self.prolog.assertz(f"male({parent.lower()})")
+                        self.prolog.assertz(f"parent({parent.lower()}, {child.lower()})")
+                        print("OK! I learned something.")
+                except Exception as e:
+                    print(f"That’s impossible! {e}")
         elif "is the mother of" in statement:
             parent, child = self._extract_names(statement, "is the mother of")
-            try:
-                if parent.lower() == child.lower() :
-                    print(f"That’s impossible! A person can't be their own mother.")
-                else:
-                    self.prolog.assertz(f"female({parent.lower()})")
-                    self.prolog.assertz(f"parent({parent.lower()}, {child.lower()})")
-                    print("OK! I learned something.")
-            except Exception as e:
-                print(f"That’s impossible! {e}")
+            if self.check_relation(child,parent,'parent') or self.check_sex(parent, 'female'):
+                print("That's impossible!")
+            else:
+                try:
+                    if parent.lower() == child.lower() :
+                        print(f"That’s impossible! A person can't be their own mother.")
+                    else:
+                        self.prolog.assertz(f"female({parent.lower()})")
+                        self.prolog.assertz(f"parent({parent.lower()}, {child.lower()})")
+                        print("OK! I learned something.")
+                except Exception as e:
+                    print(f"That’s impossible! {e}")
         elif "is a brother of" in statement:
             sibling1, sibling2 = self._extract_names(statement, "is a brother of")
-            try:
-                if sibling1.lower == sibling2.lower:
-                    print(f"That’s impossible! A person can't be their own brother.")
-                else:
-                    self.prolog.assertz(f"male({sibling1.lower()})")
-                    self.prolog.assertz(f"sibling({sibling1.lower()}, {sibling2.lower()})")
-                    self.prolog.assertz(f"sibling({sibling2.lower()}, {sibling1.lower()})")
-                    print("OK! I learned something.")
-            except Exception as e:
-                print(f"That’s impossible! {e}")
+            if self.check_sex(sibling1,'male') or self.check_relation(sibling2,sibling1,'sibling'):
+                print("That’s impossible!")
+            else:
+                try:
+                    if sibling1.lower == sibling2.lower:
+                        print(f"That’s impossible! A person can't be their own brother.")
+                    else:
+                        self.prolog.assertz(f"male({sibling1.lower()})")
+                        self.prolog.assertz(f"sibling({sibling1.lower()}, {sibling2.lower()})")
+                        self.prolog.assertz(f"sibling({sibling2.lower()}, {sibling1.lower()})")
+                        print("OK! I learned something.")
+                except Exception as e:
+                    print(f"That’s impossible! {e}")
         elif "is a sister of" in statement:
             sibling1, sibling2 = self._extract_names(statement, "is a sister of")
-            try:
-                if sibling1.lower == sibling2.lower:
-                     print(f"That’s impossible! A person can't be their own sister.")
-                else:
-                    self.prolog.assertz(f"female({sibling1.lower()})")
-                    self.prolog.assertz(f"sibling({sibling1.lower()}, {sibling2.lower()})")
-                    self.prolog.assertz(f"sibling({sibling2.lower()}, {sibling1.lower()})")
-                    print("OK! I learned something.")
-            except Exception as e:
-                print(f"That’s impossible! {e}")
+            if self.check_sex(sibling1,'female') or self.check_relation(sibling2,sibling1,'sibling'):
+                print("That’s impossible!")
+            else:
+                try:
+                    if sibling1.lower == sibling2.lower:
+                        print(f"That’s impossible! A person can't be their own sister.")
+                    else:
+                        self.prolog.assertz(f"female({sibling1.lower()})")
+                        self.prolog.assertz(f"sibling({sibling1.lower()}, {sibling2.lower()})")
+                        self.prolog.assertz(f"sibling({sibling2.lower()}, {sibling1.lower()})")
+                        print("OK! I learned something.")
+                except Exception as e:
+                    print(f"That’s impossible! {e}")
 
         elif "is a grandmother of" in statement:
             grandparent, grandchild = self._extract_names(statement, "is a grandmother of")
-            try:
-                if grandparent.lower() == grandchild.lower():
-                    print(f"That’s impossible! A person can't be their own grandmother.")
-                else:
-                    self.prolog.assertz(f"female({grandparent.lower()})")
-                    self.prolog.assertz(f"grandparent({grandparent.lower()}, {grandchild.lower()})")
-                    print("OK! I learned something.")
-            except Exception as e:
-                print(f"That’s impossible! {e}")
+            if self.check_sex(grandparent,'female') or self.check_relation(grandchild,grandparent,'grandparent'):
+                print("That’s impossible!")
+            else:
+                try:
+                    if grandparent.lower() == grandchild.lower():
+                        print(f"That’s impossible! A person can't be their own grandmother.")
+                    else:
+                        self.prolog.assertz(f"female({grandparent.lower()})")
+                        self.prolog.assertz(f"grandparent({grandparent.lower()}, {grandchild.lower()})")
+                        print("OK! I learned something.")
+                except Exception as e:
+                    print(f"That’s impossible! {e}")
 
         elif "is a grandfather of" in statement:
             grandparent, grandchild = self._extract_names(statement, "is a grandfather of")
-            try:
-                if grandparent.lower() == grandchild.lower():
-                    print(f"That’s impossible! A person can't be their own grandfather.")
-                else:
-                    self.prolog.assertz(f"male({grandparent.lower()})")
-                    self.prolog.assertz(f"grandparent({grandparent.lower()}, {grandchild.lower()})")
-                    print("OK! I learned something.")
-            except Exception as e:
-                print(f"That’s impossible! {e}")
+            query = self.check_fact(f"grandparent({grandchild.lower()}, {grandparent.lower()})")
+            if self.check_sex(grandparent,'male') or query:
+                print("That’s impossible!")
+            else:
+                try:
+                    if grandparent.lower() == grandchild.lower():
+                        print(f"That’s impossible! A person can't be their own grandfather.")
+                    else:
+                        self.prolog.assertz(f"male({grandparent.lower()})")
+                        self.prolog.assertz(f"grandparent({grandparent.lower()}, {grandchild.lower()})")
+                        print("OK! I learned something.")
+                except Exception as e:
+                    print(f"That’s impossible! {e}")
         elif "is a grandson of" in statement:
             grandchild, grandparent = self._extract_names(statement, "is a grandson of")
-            try:
-                if grandchild.lower() == grandparent.lower():
-                    print(f"That’s impossible! A person can't be their own grandson.")
-                else:
-                    self.prolog.assertz(f"male({grandchild.lower()})")
-                    self.prolog.assertz(f"grandchild({grandparent.lower()}, {grandparent.lower()})")
-                    print("OK!, I learned that something.")
-            except Exception as e:
-                print(f"That’s impossible! {e}")
+            query = self.check_fact(f"grandchild({grandparent.lower()}, {grandchild.lower()})")
+            if query or self.check_sex(grandchild,'male'):
+                print("That's impossible! A person can't be their own grandson.")
+            else:
+                try:
+                    if grandchild.lower() == grandparent.lower():
+                        print(f"That’s impossible! A person can't be their own grandson.")
+                    else:
+                        self.prolog.assertz(f"male({grandchild.lower()})")
+                        self.prolog.assertz(f"grandchild({grandparent.lower()}, {grandparent.lower()})")
+                        print("OK!, I learned that something.")
+                except Exception as e:
+                    print(f"That’s impossible! {e}")
         elif "is a granddaughter of" in statement:
             grandchild, grandparent = self._extract_names(statement, "is a granddaughter of")
             try:

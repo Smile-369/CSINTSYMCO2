@@ -10,7 +10,6 @@
 
 % Rules for family relationships
 father(X, Y) :- parent(X, Y), male(X), X \= Y.
-
 mother(X, Y) :- parent(X, Y), female(X), X \= Y.
 
 sibling(X, Y) :- 
