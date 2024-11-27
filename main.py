@@ -237,7 +237,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! ")
         elif "is a niece of" in statement:
             niece, aunt_or_uncle = self._extract_names(statement, "is a niece of")
-            if self.check_sex(niece,'female') or self.check_relation(niece,aunt_or_uncle):
+            if self.check_sex(niece,'female') or self.check_relation(aunt_or_uncle,niece):
                 print(f"That’s impossible! ")
             else:
                 try:
@@ -251,7 +251,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! ")
         elif "is a nephew of" in statement:
             nephew, aunt_or_uncle = self._extract_names(statement, "is a nephew of")
-            if self.check_sex(nephew,'male') or self.check_relation(nephew,aunt_or_uncle):
+            if self.check_sex(nephew,'male') or self.check_relation(aunt_or_uncle,nephew):
                 print(f"That’s impossible!")
             else:
                 try:
@@ -276,7 +276,7 @@ class FamilyChatbot:
                     print(f"That’s impossible!")
         elif "are the parents of" in statement:
             parent1, parent2, child = statement.replace("are the parents", "").replace("of","and").split("and")
-            if self.check_relation(child, parent1) or self.check_relation(child, parent2):
+            if self.check_relation(child, parent1) or self.check_relation(child, parent2) or self.check_relation(parent1, parent2):
                 print("That’s impossible!")
             else:
                 try:
@@ -438,7 +438,7 @@ class FamilyChatbot:
                 person2 = parts[1].strip().lower().capitalize()
                 results = list(self.prolog.query(f"relationship({person1}, {person2}, R)"))
                 if results:
-                    print(f"The relationship between {person1} and {person2} is: {' and '.join(relationships)}.")
+                    print(f"The relationship between {person1} and {person2} is: {results[0]['R']}.")
                 else:
                     print(f"I don’t know the relationship between {person1} and {person2}.")
             else:
@@ -569,6 +569,14 @@ class FamilyChatbot:
                     print("No!")
             else:
                 print("Invalid question. Please follow the sentence patterns.")
+        elif "Who are the relatives of" in question:
+            person = question.replace("Who are the relatives of", "").strip().replace("?", "")
+            results = list(self.prolog.query(f"related(X, {person.lower()})"))
+            if results:
+                relatives = [result['X'].capitalize() for result in results]
+                print(f"The relatives of {person} are: {', '.join(relatives)}.")
+            else:
+                print(f"I don’t know the relatives of {person}.")
         else:
             print("Invalid question. Please follow the sentence patterns.")
 
@@ -630,6 +638,7 @@ class FamilyChatbot:
         print("  - Who are the parents of [Name]?")
         print("  - Are [Name], [Name] and [Name]... the children of [Name]?")
         print("  - Are [Name] and [Name] related?")
+        print("  - Who are the relatives of [Name]?")
         print("Type 'quit' or 'exit' to end the chat.")
     def chat(self):
         print("Welcome to the Family Relationship Chatbot!")
