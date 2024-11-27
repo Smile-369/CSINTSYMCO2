@@ -30,7 +30,7 @@ pibling(X, Y) :- parent(Z, Y), sibling(X, Z), X \= Y.
 uncle(X, Y) :- pibling(X, Y), male(X), X \= Y.
 aunt(X, Y) :- pibling(X, Y), female(X), X \= Y.
 
-nibling := sibling(Z, Y), parent(Z, X), X \= Y.
+nibling :- sibling(Z, Y), parent(Z, X), X \= Y.
 nephew(X, Y) :- sibling(Z, Y), parent(Z, X), male(X), X \= Y.
 niece(X, Y) :- sibling(Z, Y), parent(Z, X), female(X), X \= Y.
 
