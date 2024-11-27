@@ -159,7 +159,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! A person can't be their own aunt.")
                 else:
                     self.prolog.assertz(f"female({aunt.lower()})")
-                    self.prolog.assertz(f"aunt({aunt.lower()}, {niece_or_nephew.lower()})")
+                    self.prolog.assertz(f"pibling({aunt.lower()}, {niece_or_nephew.lower()})")
                     print("OK! I learned something.")
             except Exception as e:
                 print(f"That’s impossible! {e}")
@@ -170,7 +170,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! A person can't be their own uncle.")
                 else:
                     self.prolog.assertz(f"male({uncle.lower()})")
-                    self.prolog.assertz(f"uncle({uncle.lower()}, {niece_or_nephew.lower()})")
+                    self.prolog.assertz(f"pibling({uncle.lower()}, {niece_or_nephew.lower()})")
                     print("OK! I learned something.")
             except Exception as e:
                 print(f"That’s impossible! {e}")
@@ -181,7 +181,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! A person can't be their own niece.")
                 else:
                     self.prolog.assertz(f"female({niece.lower()})")
-                    self.prolog.assertz(f"niece({niece.lower()}, {aunt_or_uncle.lower()})")
+                    self.prolog.assertz(f"nibling({niece.lower()}, {aunt_or_uncle.lower()})")
                     print("OK! I learned something.")
             except Exception as e:
                 print(f"That’s impossible! {e}")
@@ -192,7 +192,7 @@ class FamilyChatbot:
                     print(f"That’s impossible! A person can't be their own nephew.")
                 else:
                     self.prolog.assertz(f"male({nephew.lower()})")
-                    self.prolog.assertz(f"nephew({nephew.lower()}, {aunt_or_uncle.lower()})")
+                    self.prolog.assertz(f"nibling({nephew.lower()}, {aunt_or_uncle.lower()})")
                     print("OK! I learned something.")
             except Exception as e:
                 print(f"That’s impossible! {e}")
@@ -386,6 +386,18 @@ class FamilyChatbot:
             aunt, niece_or_nephew = self._extract_names(modified_question, "an aunt of")
             result = list(self.prolog.query(f"aunt({aunt.lower()}, {niece_or_nephew.lower()})"))
             print("Yes!" if result else "No!")
+        
+        elif "Is" in question and "a niece of" in question:
+            modified_question = question.replace("Is ", "").replace("?", "").strip()
+            niece, aunt_or_uncle = self._extract_names(modified_question, "a niece of")
+            result = list(self.prolog.query(f"niece({niece.lower()}, {aunt_or_uncle.lower()})"))
+            print("Yes!" if result else "No!")
+        
+        elif "Is" in question and "a nephew of" in question:
+            modified_question = question.replace("Is ", "").replace("?", "").strip()
+            nephew, aunt_or_uncle = self._extract_names(modified_question, "a nephew of")
+            result = list(self.prolog.query(f"nephew({nephew.lower()}, {aunt_or_uncle.lower()})"))
+            print("Yes!" if result else "No!")
 
         elif "Who are the children of" in question:
             parent = question.replace("Who are the children of", "").strip().replace("?", "")
@@ -395,7 +407,15 @@ class FamilyChatbot:
                 print(f"The children of {parent} are: {', '.join(children)}.")
             else:
                 print(f"I don’t know the children of {parent}.")
-                
+        elif "Are" in question and "related" in question:
+            parts = question.replace("Are", "").replace("related", "").replace("?", "").split("and")
+            if len(parts) == 2:
+                person1 = parts[0].strip().lower().capitalize()
+                person2 = parts[1].strip().lower().capitalize()
+                result = list(self.prolog.query(f"related({person1}, {person2})"))
+                print("Yes!" if result else "No!")
+            else:
+                print("Invalid question. Please follow the sentence patterns.")
         else:
             print("Invalid question. Please follow the sentence patterns.")
 
