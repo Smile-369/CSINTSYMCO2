@@ -84,6 +84,31 @@ class FamilyChatbot:
                     print("OK! I learned something.")
             except Exception as e:
                 print(f"That’s impossible! {e}")
+
+        elif "is a grandmother of" in statement:
+            grandparent, grandchild = self._extract_names(statement, "is a grandmother of")
+            try:
+                if grandparent.lower() == grandchild.lower():
+                    print(f"That’s impossible! A person can't be their own grandmother.")
+                else:
+                    self.prolog.assertz(f"female({grandparent.lower()})")
+                    self.prolog.assertz(f"grandparent({grandparent.lower()}, {grandchild.lower()})")
+                    print("OK! I learned something.")
+            except Exception as e:
+                print(f"That’s impossible! {e}")
+
+        elif "is a grandfather of" in statement:
+            grandparent, grandchild = self._extract_names(statement, "is a grandfather of")
+            try:
+                if grandparent.lower() == grandchild.lower():
+                    print(f"That’s impossible! A person can't be their own grandfather.")
+                else:
+                    self.prolog.assertz(f"male({grandparent.lower()})")
+                    self.prolog.assertz(f"grandparent({grandparent.lower()}, {grandchild.lower()})")
+                    print("OK! I learned something.")
+            except Exception as e:
+                print(f"That’s impossible! {e}")
+            
         #handles [Name1] and [Name2] are siblings
         elif "are siblings" in statement:
             sibling1, sibling2 = self._extract_names(statement.replace(" are siblings", ""), " and ")
@@ -186,6 +211,19 @@ class FamilyChatbot:
                 print(f"The grandchildren of {grandparent} are: {', '.join(grandchildren)}")
             else:
                 print(f"I don’t know the grandchildren of {grandparent}.")
+                
+        elif "What is the relationship between" in question:
+            parts = question.replace("What is the relationship between", "").replace("?", "").split("and")
+            if len(parts) == 2:
+                person1 = parts[0].strip().lower().capitalize()
+                person2 = parts[1].strip().lower().capitalize()
+                results = list(self.prolog.query(f"relationship({person1}, {person2}, R)"))
+                if results:
+                    print(f"The relationship between {person1} and {person2} is: {' and '.join(relationships)}.")
+                else:
+                    print(f"I don’t know the relationship between {person1} and {person2}.")
+            else:
+                print("Invalid question. Please follow the sentence patterns.")
         # Handle invalid questions
         else:
             print("Invalid question. Please follow the sentence patterns.")
