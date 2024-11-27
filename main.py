@@ -209,25 +209,25 @@ class FamilyChatbot:
 
 
     def process_question(self, question):
-        # Handle the "Is [Parent] the father of [Child]" question
+
         if "Is" in question and "the father of" in question:
             modified_question = question.replace("Is ", "").replace("?", "").strip()
             parent, child = self._extract_names(modified_question, "the father of")
             result = list(self.prolog.query(f"father({parent.lower()}, {child.lower()})"))
             print("Yes!" if result else "No!")
-        # Handle the "Is [Person1] the brother of [Person2]" question
+
         elif "Is" in question and "the brother of" in question:
             modified_question = question.replace("Is ", "").replace("?", "").strip()
             person1, person2 = self._extract_names(modified_question, "the brother of")
             result = list(self.prolog.query(f"brother({person1.lower()}, {person2.lower()})"))
             print("Yes!" if result else "No!")
-        # Handle the "Is [Person1] the sister of [Person2]" question
+
         elif "Is" in question and "the sister of" in question:
             modified_question = question.replace("Is ", "").replace("?", "").strip()
             person1, person2 = self._extract_names(modified_question, "the sister of")
             result = list(self.prolog.query(f"sister({person1.lower()}, {person2.lower()})"))
             print("Yes!" if result else "No!")
-        # Handle the "Who is the father of [Child]?" question
+
         elif "Who is the father of" in question:
             child = question.replace("Who is the father of", "").strip().replace("?", "")
             results = list(self.prolog.query(f"father(X, {child.lower()})"))
@@ -236,7 +236,6 @@ class FamilyChatbot:
             else:
                 print(f"I don’t know who the father of {child} is.")
 
-        # Handle the "Are [Name1] and [Name2] siblings?" question
         elif "Are" in question and "siblings" in question:
             parts = question.replace("Are", "").replace("siblings", "").replace("?", "").split("and")
             if len(parts) == 2:
@@ -246,7 +245,7 @@ class FamilyChatbot:
                 print("Yes!" if result else "No!")
             else:
                 print("Invalid question. Please follow the sentence patterns.")
-        # Handle the "Are [Person1] and [Person2] the parents of [Person3]?" question
+
         elif "Are" in question and "the parents of" in question:
             modified_question = question.replace("Are", "").replace("the parents of", "").replace("?", "").strip()
             parts = modified_question.rsplit("and", 1)
@@ -265,14 +264,12 @@ class FamilyChatbot:
             else:
                 print("Invalid question. Please follow the sentence patterns.")
 
-        # Handle the "Is [Parent] the mother of [Child]" question
         elif "Is" in question and "the mother of" in question:
             modified_question = question.replace("Is ", "").replace("?", "").strip()
             parent, child = self._extract_names(modified_question, "the mother of")
             result = list(self.prolog.query(f"mother({parent.lower()}, {child.lower()})"))
             print("Yes!" if result else "No!")
 
-        # Handle the "Who is the mother of [Child]?" question
         elif "Who is the mother of" in question:
             child = question.replace("Who is the mother of", "").strip().replace("?", "")
             results = list(self.prolog.query(f"mother(X, {child.lower()})"))
@@ -280,8 +277,7 @@ class FamilyChatbot:
                 print(f"The mother of {child} is {results[0]['X'].capitalize()}.")
             else:
                 print(f"I don’t know who the mother of {child} is.")
-            # Handle grandparents and grandchildren
-        # Handle siblings
+
         elif "Who are the siblings of" in question:
             person = question.replace("Who are the siblings of", "").strip().replace("?", "")
             results = list(self.prolog.query(f"sibling(X, {person.lower()})"))
@@ -339,7 +335,7 @@ class FamilyChatbot:
                     print(f"I don’t know the relationship between {person1} and {person2}.")
             else:
                 print("Invalid question. Please follow the sentence patterns.")
-        # Handle invalid questions
+
         elif "Who are the sons of" in question:
             parent = question.replace("Who are the sons of", "").strip().replace("?", "")
             results = list(self.prolog.query(f"son(X, {parent.lower()})"))
@@ -356,19 +352,19 @@ class FamilyChatbot:
                 print(f"The daughters of {parent} are: {', '.join(children)}")
             else:
                 print(f"I don’t know the daughters of {parent}.")
-        # Handle invalid questions
+
         elif "Is" in question and "a daughter of" in question:
             modified_question = question.replace("Is ", "").replace("?", "").strip()
             child, parent = self._extract_names(modified_question, "the mother of")
             result = list(self.prolog.query(f"daugther({child.lower()}, {parent.lower()})"))
             print("Yes!" if result else "No!")
-        # Handle the "Is [Child] the son of [Parent]?" question
+
         elif "Is" in question and "a son of" in question:
             modified_question = question.replace("Is ", "").replace("?", "").strip()
             child, parent = self._extract_names(modified_question, "the mother of")
             result = list(self.prolog.query(f"son({child.lower()}, {parent.lower()})"))
             print("Yes!" if result else "No!")
-        # Handle "Is [Child] a child of [Parent]?"
+
         elif "Is" in question and "a child of" in question:
             modified_question = question.replace("Is ", "").replace("?", "").strip()
             child, parent = self._extract_names(modified_question, "a child of")
@@ -407,6 +403,20 @@ class FamilyChatbot:
                 print(f"The children of {parent} are: {', '.join(children)}.")
             else:
                 print(f"I don’t know the children of {parent}.")
+
+        elif "Are" in question and "the children of" in question:
+            parts = question.replace("Are", "").replace("of","and").replace("the children", "").replace("?", "").split("and")
+            if len(parts) == 4:
+                children = [parts[0].strip().lower().capitalize(), parts[1].strip().lower().capitalize(), parts[2].strip().lower().capitalize()]
+                parent = parts[3].strip().lower().capitalize()
+                results = [list(self.prolog.query(f"parent({parent.lower()}, {child.lower()})")) for child in children]
+                if all(results):
+                    print("Yes!")
+                else:
+                    print("No!")
+            else:
+                print("Invalid question. Please follow the sentence patterns.")
+
         elif "Are" in question and "related" in question:
             parts = question.replace("Are", "").replace("related", "").replace("?", "").split("and")
             if len(parts) == 2:
@@ -419,13 +429,68 @@ class FamilyChatbot:
         else:
             print("Invalid question. Please follow the sentence patterns.")
 
+    def statements(self):
+        print("Here are the commands you can use:")
+        print("Statements:")
+        print("  - [Name] is a male")
+        print("  - [Name] is a female")
+        print("  - [Name] is the father of [Name]")
+        print("  - [Name] is the mother of [Name]")
+        print("  - [Name] is a brother of [Name]")
+        print("  - [Name] is a sister of [Name]")
+        print("  - [Name] is a grandmother of [Name]")
+        print("  - [Name] is a grandfather of [Name]")
+        print("  - [Name] is a grandson of [Name]")
+        print("  - [Name] is a granddaughter of [Name]")
+        print("  - [Name] is a son of [Name]")
+        print("  - [Name] is a daughter of [Name]")
+        print("  - [Name] is an aunt of [Name]")
+        print("  - [Name] is an uncle of [Name]")
+        print("  - [Name] is a niece of [Name]")
+        print("  - [Name] is a nephew of [Name]")
+        print("  - [Name] and [Name] are siblings")
+    
+    def questions(self):
+        print("Here are the commands you can use:")
+        print("Questions:")
+        print("  - Is [Name] the father of [Name]?")
+        print("  - Is [Name] the mother of [Name]?")
+        print("  - Is [Name] the brother of [Name]?")
+        print("  - Is [Name] the sister of [Name]?")
+        print("  - Who is the father of [Name]?")
+        print("  - Who is the mother of [Name]?")
+        print("  - Who are the siblings of [Name]?")
+        print("  - Who are the brothers of [Name]?")
+        print("  - Who are the sisters of [Name]?")
+        print("  - Who are the grandparents of [Name]?")
+        print("  - Who are the grandchildren of [Name]?")
+        print("  - What is the relationship between [Name] and [Name]?")
+        print("  - Who are the sons of [Name]?")
+        print("  - Who are the daughters of [Name]?")
+        print("  - Is [Name] a son of [Name]?")
+        print("  - Is [Name] a daughter of [Name]?")
+        print("  - Is [Name] a child of [Name]?")
+        print("  - Is [Name] an uncle of [Name]?")
+        print("  - Is [Name] an aunt of [Name]?")
+        print("  - Is [Name] a niece of [Name]?")
+        print("  - Is [Name] a nephew of [Name]?")
+        print("  - Who are the children of [Name]?")
+        print("  - Are [Name], [Name], and [Name] the children of [Name]?")
+        print("  - Are [Name] and [Name] related?")
+        print("Type 'quit' or 'exit' to end the chat.")
     def chat(self):
         print("Welcome to the Family Relationship Chatbot!")
+        print("You can tell me statements or ask me questions about family relationships.")
+        print("Type 'quit' or exit' to end the chat. Statements or statement to see the available statements. And Questions or questions to see the available questions.")
         while True:
             user_input = input("\n> ").strip()
             if user_input.lower() in ["quit", "exit"]:
                 print("Goodbye!")
                 break
+            elif user_input.lower() in ["statements", "statement"]:
+                self.statements()
+            elif user_input.lower() in ["questions", "question"]:
+                self.questions()
             elif "?" in user_input:
                 self.process_question(user_input)
             else:
